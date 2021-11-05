@@ -1,4 +1,4 @@
-import django.urls from path
+from django.urls import path
 
 
 urlpatterns = [
