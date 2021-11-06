@@ -53,39 +53,3 @@ class AcGameMenu {
         this.$menu.hide();
     }
 }
-class AcGamePlayground {
-    constructor(root) {
-        this.root = root;
-        this.$playground = $(`<div>游戏界面</div>`);
-
-        this.root.$ac_game.append(this.$playground); //加入到游戏界面里
-
-        this.start();
-
-    }
-
-    start(){
-    }
-
-    show() {    //打开playground界面
-        this.$playground.show();
-    }
-
-    hide() {    //关闭playground界面
-        this.$playground.hide();
-    }
-}
-class AcGame{
-    constructor(id) {
-        this.id = id;
-        this.$ac_game = $('#' + id);
-        this.menu = new AcGameMenu(this);   //创建菜单对象
-        this.playground = new AcGamePlayground(this);   //创建Playground对象
-
-        this.start();   //构造函数的延伸
-    }
-
-
-    start() {
-    }
-}
