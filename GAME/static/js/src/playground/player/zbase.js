@@ -87,7 +87,19 @@ class Player extends AcGameObject {
         }
         this.damage_x = Math.cos(angle);
         this.damage_y = Math.sin(angle);
-        this.damage_speed = damage * 50;
+        this.damage_speed = damage * 100;
+	this.speed *= 0.8;
+	
+	for(let i = 1; i< 20 + Math.random() * 10; i++){
+		let x = this.x, y = this.y;
+		let radius = this.radius * Math.random() * 0.1;
+		let angle = Math.Pi * 2 * Math.random();
+		let vx = Math.cos(angle), vy = Math.sin(angle);
+		let color = this.color;
+		let speed = this.speed * 10;
+		let move_length = this.radius * Math.random() * 5;
+		new Particle(this.playground, x, y, radius, vx, vy, color, speed, move_length);
+	}
     }
 
     update() {
@@ -102,9 +114,9 @@ class Player extends AcGameObject {
                 this.move_length = 0;
                 this.vx = this.vy = 0;
                 if(!this.is_me) {
-                let tx = Math.random() * this.playground.width;
-                let ty = Math.random() * this.playground.height;
-                this.move_to(tx,ty);
+                   let tx = Math.random() * this.playground.width;
+                   let ty = Math.random() * this.playground.height;
+                   this.move_to(tx,ty);
             }
         }else {
             let moved = Math.min(this.move_length, this.speed * this.timedelta / 1000);

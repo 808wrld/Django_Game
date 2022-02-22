@@ -126,6 +126,50 @@ class GameMap extends AcGameObject {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 }
+class Particle extends AcGameObject {
+    constructor(playground, x, y, radius, vx, vy, color,speed, move_length) {
+	super();
+	this.playground = playground;
+	this.ctx = this.playground.game_map.ctx;
+	this.x = x;
+	this.y = y;
+	this.radius = radius;
+	this.vx = vx;
+	this.vy = vy;
+	this.color = color;
+	this.speed = speed;
+	this.move_length = move_length;
+	this.friction = 0.9;
+	this.eps = 3;
+    }
+
+	start(){
+
+	}
+
+	update(){
+		if(this.move_length < this.eps || this.speed < this.eps) {
+			this.destroy();
+			return false;
+		}
+		let moved = Math.min(this.move_length, this.speed * this.timedelta / 1000);
+		this.x += this.vx * moved;
+		this.y += this.vy * moved;
+		this.speed *= this.friction;
+		this.move_length -= moved;
+		this.render();
+	}
+
+	render(){
+		this.ctx.beginPath();
+		this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+		this.ctx.fillstyle = this.color;
+		this.ctx.fill();
+	}
+
+
+}
+
 class Player extends AcGameObject {
     constructor(playground, x ,y, radius, color, speed, is_me) {
         super();
@@ -215,11 +259,23 @@ class Player extends AcGameObject {
         }
         this.damage_x = Math.cos(angle);
         this.damage_y = Math.sin(angle);
-        this.damage_speed = damage * 50;
+        this.damage_speed = damage * 100;
+	this.speed *= 0.8;
+	
+	for(let i = 1; i< 20 + Math.random() * 10; i++){
+		let x = this.x, y = this.y;
+		let radius = this.radius * Math.random() * 0.1;
+		let angle = Math.Pi * 2 * Math.random();
+		let vx = Math.cos(angle), vy = Math.sin(angle);
+		let color = this.color;
+		let speed = this.speed * 10;
+		let move_length = this.radius * Math.random() * 5;
+		new Particle(this.playground, x, y, radius, vx, vy, color, speed, move_length);
+	}
     }
 
     update() {
-        if(this.damage_speed > this.eps) {
+        if(this.damage_speed > 10) {
             this.vx = this.vy = 0;
             this.move_length = 0;
             this.x += this.damage_x * this.damage_speed * this.timedelta / 1000;
@@ -230,9 +286,9 @@ class Player extends AcGameObject {
                 this.move_length = 0;
                 this.vx = this.vy = 0;
                 if(!this.is_me) {
-                let tx = Math.random() * this.playground.width;
-                let ty = Math.random() * this.playground.height;
-                this.move_to(tx,ty);
+                   let tx = Math.random() * this.playground.width;
+                   let ty = Math.random() * this.playground.height;
+                   this.move_to(tx,ty);
             }
         }else {
             let moved = Math.min(this.move_length, this.speed * this.timedelta / 1000);
@@ -334,13 +390,17 @@ class AcGamePlayground {
         this.players.push(new Player(this, this.width / 2, this.height / 2, this.height * 0.05, "white", this.height * 0.15, true));
 
         for (let i = 0; i < 5; i++) {
-            this.players.push(new Player(this, this.width / 2, this.height / 2, this.height * 0.05, "blue", this.height * 0.15, false));
+            this.players.push(new Player(this, this.width / 2, this.height / 2, this.height * 0.05, this.get_random_color(), this.height * 0.15, false));
         }
-
         this.start();
-
     }
 
+	get_random_color() {
+		let colors = ["blue", "red", "pink", "grey", "green"];
+		return colors[Math.floor(Math.random() * 5)];
+	
+
+	}
     start(){
     }
 
