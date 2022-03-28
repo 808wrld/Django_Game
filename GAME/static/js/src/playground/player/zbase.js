@@ -20,6 +20,11 @@ class Player extends AcGameObject {
         this.spent_time = 0;
 
         this.cur_skill = null;
+
+        if(this.is_me){
+            this.img = new Image();
+            this.img.src = this.playground.root.settings.photo;
+        }
     }
 
     start() {

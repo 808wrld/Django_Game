@@ -19,6 +19,7 @@ class AcGameMenu {
     </div>
 </div>
 `);
+        this.$menu.hide();
         this.root.$ac_game.append(this.$menu);
         this.$single_mode = this.$menu.find('.ac-game-menu-field-item-single-mode');
         this.$multi_mode = this.$menu.find('.ac-game-menu-field-item-multi-mode');
@@ -191,6 +192,11 @@ class Player extends AcGameObject {
         this.spent_time = 0;
 
         this.cur_skill = null;
+
+        if(this.is_me){
+            this.img = new Image();
+            this.img.src = this.playground.root.settings.photo;
+        }
     }
 
     start() {
@@ -426,14 +432,66 @@ class AcGamePlayground {
         this.$playground.hide();
     }
 }
+class Settings {
+    constructor(root) {
+        this.root = root;
+        this.platform = "WEB";
+        if(this.root.AcWingOS) this.platform = "ACAPP";
+        this.username = "";
+        this.photo = "";
+        this.start();
+    }
+
+    start(){
+        this.getinfo();
+    }
+
+    register(){
+    }
+
+    login(){
+    }
+
+    getinfo() {
+        let outer = this;
+
+        $.ajax({
+            url:"https://app629.acapp.acwing.com.cn/settings/getinfo/",
+            type:"GET",
+            data: {
+                platform: outer.platform,
+            },
+            success:function(resp) {
+                console.log(resp);
+                if(resp.result === "success") {
+                    outer.username = resp.username;
+                    outer.photo = resp.photo;
+                    outer.hide();
+                    outer.root.menu.show();
+                }else {
+                    outer.login();
+                }
+            }
+        });
+    }
+
+    hide() {
+    }
+
+    show() {
+    }
+
+}
 export class AcGame{
-    constructor(id) {
+    constructor(id,AcWingOS) {
         this.id = id;
         this.$ac_game = $('#' + id);
-        this.menu = new AcGameMenu(this);   //创建菜单对象
-        this.playground = new AcGamePlayground(this);   //创建Playground对象
+        this,AcWingOS = AcWingOS;
+        this.settings = new Settings(this);
+        this.menu = new AcGameMenu(this);
+        this.playground = new AcGamePlayground(this);
 
-        this.start();   //构造函数的延伸
+        this.start();
     }
 
 

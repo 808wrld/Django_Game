@@ -9,7 +9,7 @@
 .ac-game-menu-field {
     width: 20vw;
     position: relative;
-    top: 40%;
+    top: 40vh;
     left: 20%;
 }
 
@@ -19,7 +19,7 @@
     color:white;
     font-size: 4vh;
     font-style: italic;
-    /* padding: 2vh; */
+    padding: 2vh;
     cursor: pointer;
     text-align: center;
     background-color:rgba(39,21,28, 0.6);
